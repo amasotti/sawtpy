@@ -14,9 +14,9 @@ class VectorStore:
 
     def __init__(
         self,
-        persist_directory: str = "chroma_data",
+        persist_directory: str = "chroma_data", # in memory vector db
         collection_name: str = "transcripts",
-        embedding_model: str = "all-MiniLM-L6-v2",
+        embedding_model: str = "paraphrase-multilingual-MiniLM-L12-v2" # "all-MiniLM-L6-v2",
     ):
         self.embedding_fn = SentenceTransformerEmbeddingFunction(model_name=embedding_model)
         self.client = chromadb.PersistentClient(path=persist_directory)
