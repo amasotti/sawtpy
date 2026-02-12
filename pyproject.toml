@@ -5,12 +5,12 @@ description = "A local tool to download, transcribe and search YouTube videos."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "yt-dlp>=2023.11.16",
-    "faster-whisper>=0.10.0",
-    "chromadb>=0.4.22",
-    "sentence-transformers>=2.3.1",
-    "rich>=13.7.0",
-    "torch>=2.1.0",
+    "yt-dlp>=2025.12.8",
+    "faster-whisper>=1.2.1",
+    "chromadb>=1.5.0",
+    "sentence-transformers>=3.4.1",
+    "rich>=14.3.2",
+    "torch>=2.3.1",
 ]
 
 [build-system]
