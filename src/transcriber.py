@@ -72,13 +72,13 @@ class Transcriber:
         else:
             logger.info("Language will be auto-detected")
         try:
-            segments, info = self.model.transcribe(audio_path, beam_size=beam_size, language=language)
+            segments, info = self.model.transcribe(audio_path, beam_size=beam_size, language=language, log_progress=True)
 
             logger.info(f"Detected language '{info.language}' with probability {info.language_probability:.2f}")
 
             result = []
             for segment in segments:
-                # logger.debug(f"[{segment.start:.2f}s -> {segment.end:.2f}s] {segment.text}")
+                logger.debug(f"[{segment.start:.2f}s -> {segment.end:.2f}s] {segment.text}")
                 result.append({
                     "start": segment.start,
                     "end": segment.end,
