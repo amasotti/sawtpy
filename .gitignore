@@ -10,3 +10,7 @@ wheels/
 .venv
 downloads/*.wav
 downloads/*.wav.txt
+
+
+# IDE
+.idea/
