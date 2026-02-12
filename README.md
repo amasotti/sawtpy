@@ -52,6 +52,14 @@ uv run main.py transcribe <file> [--language XX]
 uv run main.py search "query" [-n N] [--video-id ID]
 ```
 
+### Export a transcript to CSV
+
+```bash
+uv run main.py export <video_id> [-o output.csv]
+```
+
+Retrieves all stored transcript segments for a video and saves them to a CSV file with columns: `start`, `end`, `text`. If no output path is specified, defaults to `<video_id>.csv`.
+
 ### Full pipeline (download → transcribe → store)
 
 ```bash
