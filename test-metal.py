@@ -1,7 +1,7 @@
 import torch
 
 def main():
-    print("Hello from s2t-experiment!")
+    print("Hello from experiment!")
 
     if torch.backends.mps.is_available():
         device = torch.device("mps")

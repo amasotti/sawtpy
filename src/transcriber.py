@@ -67,7 +67,7 @@ class Transcriber:
 
         logger.info(f"Starting transcription for {audio_path}...")
         try:
-            segments, info = self.model.transcribe(audio_path, beam_size=beam_size, language="ar") # Prioritize Arabic/Tunisian as requested
+            segments, info = self.model.transcribe(audio_path, beam_size=beam_size, language="it") # Prioritize Arabic/Tunisian as requested
             
             logger.info(f"Detected language '{info.language}' with probability {info.language_probability}")
 
@@ -86,35 +86,24 @@ class Transcriber:
             logger.error(f"Transcription failed: {e}")
             raise
 
+
 if __name__ == "__main__":
-    # Simple test script
     import sys
+
+    logging.basicConfig(level=logging.INFO)
 
     if len(sys.argv) > 1:
         audio_file = sys.argv[1]
-        logger.info(f"Testing transcription of: {audio_file}")
-
         transcriber = Transcriber()
         segments = transcriber.transcribe(audio_file)
-        
-        print("\n" + "="*80)
-        print("TRANSCRIPTION RESULTS")
-        print("="*80)
-        for i, seg in enumerate(segments[:10], 1):  # Show first 10 segments
-            print(f"\n[{i}] {seg.start:.2f}s - {seg.end:.2f}s (confidence: {seg.confidence:.2f})")
-            print(f"    {seg.text}")
 
-        if len(segments) > 10:
-            print(f"\n... and {len(segments) - 10} more segments")
+        # Print first few segments
+        for seg in segments[:5]:
+            print(f"[{seg['start']:.2f} - {seg['end']:.2f}]: {seg['text']}")
 
-        print("\n" + "="*80)
-
-        # Optional: save to file
-        output_file = audio_file + ".txt"
-        with open(output_file, "w", encoding="utf-8") as f:
+        # save to file
+        with open(audio_file + ".txt", "w", encoding="utf-8") as f:
             for seg in segments:
-                f.write(f"[{seg.start:.2f}s - {seg.end:.2f}s]: {seg.text}\n")
-        logger.info(f"Full transcript saved to: {output_file}")
+                f.write(f"[{seg['start']:.2f} - {seg['end']:.2f}]: {seg['text']}\n")
     else:
-        print("Usage: python src/transcriber.py <audio_file.wav>")
-
+        print("Usage: python src/transcriber.py <audio_file_path>")
