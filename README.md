@@ -1,7 +1,7 @@
 # S2T Experiment
 
 A local tool to download, transcribe, and search YouTube videos using `yt-dlp`, `faster-whisper`, and `ChromaDB`.
-The language can be configured in `src/transcriber.py` (default is Italian).
+The transcription language is configurable per run (defaults to auto-detection if not specified).
 
 This is a learning project to experiment with these technologies, especially the whisper model, yt-dlp and the 
 chroma vector database.
@@ -32,14 +32,35 @@ brew install ffmpeg
 
 ## Usage
 
-### Downloader (Test)
+All commands are run through `main.py`. Add `-v` before any subcommand for debug logging.
+
+### Download audio from a YouTube video
 
 ```bash
-uv run src/downloader.py <video_url> <output_path>
+uv run main.py download <url> [-o dir]
+```
+
+### Transcribe a WAV file
+
+```bash
+uv run main.py transcribe <file> [--language XX]
+```
+
+### Search stored transcripts
+
+```bash
+uv run main.py search "query" [-n N] [--video-id ID]
+```
+
+### Full pipeline (download → transcribe → store)
+
+```bash
+uv run main.py pipeline <url> [--language XX]
 ```
 
 ## Project Structure
 
-- `src/downloader.py`: Handles media downloading.
-- `src/transcriber.py`: Handles audio transcription.
-- `src/vector_store.py`: Handles vector storage and search (TODO).
+- `main.py`: CLI entry point and orchestrator (argparse + rich).
+- `src/downloader.py`: Handles media downloading via yt-dlp.
+- `src/transcriber.py`: Handles audio transcription via faster-whisper.
+- `src/vector_store.py`: Handles vector storage and semantic search via ChromaDB.
