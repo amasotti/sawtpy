@@ -44,7 +44,7 @@ class MediaDownloader:
                 'preferredcodec': 'wav',
                 'preferredquality': '192',
             }],
-            'outtmpl': str(self.output_dir / '%(id)s.%(ext)s'),
+            'outtmpl': str(self.output_dir + "/" + '%(id)s.%(ext)s'),
             'quiet': False,
             'no_warnings': True,
         }
