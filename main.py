@@ -1,4 +1,5 @@
 import argparse
+import csv
 import logging
 import sys
 from pathlib import Path
@@ -33,6 +34,11 @@ def build_parser() -> argparse.ArgumentParser:
     q.add_argument("query", help="Search query")
     q.add_argument("-n", "--n-results", type=int, default=5, help="Number of results (default: 5)")
     q.add_argument("--video-id", default=None, help="Filter by video ID")
+
+    # export
+    e = sub.add_parser("export", help="Export a stored transcript as CSV")
+    e.add_argument("video_id", help="YouTube video ID to export")
+    e.add_argument("-o", "--output", default=None, help="Output CSV file path (default: <video_id>.csv)")
 
     # pipeline
     p = sub.add_parser("pipeline", help="Full pipeline: download → transcribe → store")
@@ -95,6 +101,35 @@ def cmd_search(args: argparse.Namespace) -> None:
     console.print(table)
 
 
+def cmd_export(args: argparse.Namespace) -> None:
+    from src.vector_store import VectorStore
+
+    store = VectorStore()
+    segments = store.get_segments(args.video_id)
+
+    if not segments:
+        console.print(f"[yellow]No transcript found for video '{args.video_id}'.[/yellow]")
+        sys.exit(1)
+
+    # Console table
+    table = Table(title=f"Transcript: {args.video_id}")
+    table.add_column("Start", style="cyan", width=8)
+    table.add_column("End", style="cyan", width=8)
+    table.add_column("Text")
+    for seg in segments:
+        table.add_row(f"{seg['start']:.2f}", f"{seg['end']:.2f}", seg["text"])
+    console.print(table)
+
+    # CSV file
+    csv_path = Path(args.output) if args.output else Path(f"{args.video_id}.csv")
+    with open(csv_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["start", "end", "text"])
+        for seg in segments:
+            writer.writerow([f"{seg['start']:.2f}", f"{seg['end']:.2f}", seg["text"]])
+    console.print(f"[green]Exported {len(segments)} segments to {csv_path}[/green]")
+
+
 def cmd_pipeline(args: argparse.Namespace) -> None:
     from src.downloader import MediaDownloader
     from src.transcriber import Transcriber
@@ -136,6 +171,7 @@ def main() -> None:
         "download": cmd_download,
         "transcribe": cmd_transcribe,
         "search": cmd_search,
+        "export": cmd_export,
         "pipeline": cmd_pipeline,
     }
 

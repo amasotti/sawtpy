@@ -86,6 +86,23 @@ class VectorStore:
             })
         return out
 
+    def get_segments(self, video_id: str) -> List[Dict[str, Any]]:
+        """Return all transcript segments for a video, sorted by start time."""
+        results = self.collection.get(
+            where={"video_id": video_id},
+            include=["documents", "metadatas"],
+        )
+        segments = []
+        for doc, meta in zip(results["documents"], results["metadatas"]):
+            segments.append({
+                "text": doc,
+                "video_id": meta["video_id"],
+                "start": meta["start"],
+                "end": meta["end"],
+            })
+        segments.sort(key=lambda s: s["start"])
+        return segments
+
     def get_video_ids(self) -> List[str]:
         """Return a sorted list of all stored video IDs."""
         all_meta = self.collection.get(include=["metadatas"])["metadatas"]
