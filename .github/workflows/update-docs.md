@@ -21,7 +21,8 @@ tools:
   web-fetch:
   github:
     toolsets: [repos, issues, pull_requests, actions]
-    
+
+engine: claude    
 
 timeout-minutes: 15
 ---
