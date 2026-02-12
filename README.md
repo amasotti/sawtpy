@@ -3,6 +3,9 @@
 A local tool to download, transcribe, and search YouTube videos using `yt-dlp`, `faster-whisper`, and `ChromaDB`.
 The language can be configured in `src/transcriber.py` (default is Italian).
 
+This is a learning project to experiment with these technologies, especially the whisper model, yt-dlp and the 
+chroma vector database.
+
 ## Features
 
 - **Download**: Extracts audio from YouTube videos (WAV format).

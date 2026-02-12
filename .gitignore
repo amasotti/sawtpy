@@ -12,5 +12,8 @@ downloads/*.wav
 downloads/*.wav.txt
 
 
+# Vector store
+chroma_data/
+
 # IDE
 .idea/

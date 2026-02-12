@@ -1,6 +1,6 @@
-import os
 import logging
-from typing import List, Dict, Any
+from pathlib import Path
+from typing import List, Dict, Any, Optional
 from faster_whisper import WhisperModel
 import torch
 
@@ -51,25 +51,30 @@ class Transcriber:
             logger.error(f"Failed to load model: {e}")
             raise
 
-    def transcribe(self, audio_path: str, beam_size: int = 5) -> List[Dict[str, Any]]:
+    def transcribe(self, audio_path: str, beam_size: int = 5, language: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Transcribes the given audio file.
 
         Args:
             audio_path: Path to the audio file.
             beam_size: Beam size for beam search decoding.
+            language: Language code (e.g. "en", "ar", "it"). None for auto-detection.
 
         Returns:
             A list of dictionary segments containing 'start', 'end', and 'text'.
         """
-        if not os.path.exists(audio_path):
+        if not Path(audio_path).exists():
             raise FileNotFoundError(f"Audio file not found: {audio_path}")
 
         logger.info(f"Starting transcription for {audio_path}...")
+        if language:
+            logger.info(f"Language set to '{language}'")
+        else:
+            logger.info("Language will be auto-detected")
         try:
-            segments, info = self.model.transcribe(audio_path, beam_size=beam_size, language="it") # Prioritize Arabic/Tunisian as requested
-            
-            logger.info(f"Detected language '{info.language}' with probability {info.language_probability}")
+            segments, info = self.model.transcribe(audio_path, beam_size=beam_size, language=language)
+
+            logger.info(f"Detected language '{info.language}' with probability {info.language_probability:.2f}")
 
             result = []
             for segment in segments:
@@ -94,16 +99,15 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         audio_file = sys.argv[1]
+        language = sys.argv[2] if len(sys.argv) > 2 else None
         transcriber = Transcriber()
-        segments = transcriber.transcribe(audio_file)
+        segments = transcriber.transcribe(audio_file, language=language)
 
-        # Print first few segments
         for seg in segments[:5]:
             print(f"[{seg['start']:.2f} - {seg['end']:.2f}]: {seg['text']}")
 
-        # save to file
         with open(audio_file + ".txt", "w", encoding="utf-8") as f:
             for seg in segments:
                 f.write(f"[{seg['start']:.2f} - {seg['end']:.2f}]: {seg['text']}\n")
     else:
-        print("Usage: python src/transcriber.py <audio_file_path>")
+        print("Usage: python src/transcriber.py <audio_file_path> [language_code]")

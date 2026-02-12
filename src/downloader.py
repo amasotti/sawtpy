@@ -1,5 +1,5 @@
-import os
 import logging
+from pathlib import Path
 from typing import Optional
 import yt_dlp
 
@@ -11,9 +11,8 @@ class MediaDownloader:
     Downloads audio from YouTube videos using yt-dlp.
     """
     def __init__(self, output_dir: str = "downloads"):
-        self.output_dir = output_dir
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir)
+        self.output_dir = Path(output_dir)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def download_audio(self, video_url: str) -> Optional[str]:
         """
@@ -44,7 +43,7 @@ class MediaDownloader:
                 'preferredcodec': 'wav',
                 'preferredquality': '192',
             }],
-            'outtmpl': str(self.output_dir + "/" + '%(id)s.%(ext)s'),
+            'outtmpl': str(self.output_dir / '%(id)s.%(ext)s'),
             'quiet': False,
             'no_warnings': True,
         }
