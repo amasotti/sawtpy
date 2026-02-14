@@ -1,4 +1,10 @@
-# S2T Experiment
+# Sawt CLI - A YouTube S2T (Speech-to-Text) Experiment
+
+
+[![Built with Python](https://img.shields.io/badge/Python-3.13-blue?logo=python)](https://www.python.org/downloads/release/python-3130/) 
+[![Embeddings](https://img.shields.io/badge/Embeddings-paraphrase--multilingual--MiniLM--L12--v2-orange)](https://www.sbert.net/docs/pretrained_models.html)
+[![CI](https://github.com/amasotti/sawtpy/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/amasotti/sawtpy/actions/workflows/ci.yml)
+
 
 A local tool to download, transcribe, and search YouTube videos using `yt-dlp`, `faster-whisper`, and `ChromaDB`.
 The transcription language is configurable per run (defaults to auto-detection if not specified).
